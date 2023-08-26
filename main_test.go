@@ -46,7 +46,7 @@ func Test_CopyOnWrite(t *testing.T) {
 }
 
 func Benchmark_Maps(b *testing.B) {
-	b.Run("infrequent write constant read", func(b *testing.B) {
+	b.Run("concurrent read", func(b *testing.B) {
 		b.Run("copy on write map", func(b *testing.B) {
 			cowmap := cowmap.New()
 			const maxval = 10
@@ -74,6 +74,22 @@ func Benchmark_Maps(b *testing.B) {
 				}
 			})
 
+		})
+	})
+
+	b.Run("single write", func(b *testing.B) {
+		b.Run("copy on write map", func(b *testing.B) {
+			cowmap := cowmap.New()
+			for i := 0; i < b.N; i++ {
+				cowmap.Set(i, i)
+			}
+		})
+
+		b.Run("rwmutex map", func(b *testing.B) {
+			rwmutexmap := rwmutexmap.New()
+			for i := 0; i < b.N; i++ {
+				rwmutexmap.Set(i, i)
+			}
 		})
 	})
 }

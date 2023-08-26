@@ -11,7 +11,7 @@ type Cowmap struct {
 
 func New() *Cowmap {
 	innerMap := new(map[interface{}]interface{})
-	cowmap := &Cowmap{unsafe.Pointer(&innerMap)}
+	cowmap := &Cowmap{unsafe.Pointer(innerMap)}
 	return cowmap
 }
 
