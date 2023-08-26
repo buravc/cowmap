@@ -3,7 +3,6 @@ package rwmutexmap_test
 import (
 	"cowmap/race"
 	"cowmap/rwmutexmap"
-	"fmt"
 	"testing"
 	"time"
 )
@@ -12,7 +11,6 @@ func Test_CopyOnWrite(t *testing.T) {
 	if !race.Enabled {
 		t.Fatalf("race detector is not enabled")
 	}
-	t.Log("Running copy on write test")
 	rwmutexmap := rwmutexmap.New()
 
 	quitSignal := make(chan struct{})
@@ -33,14 +31,13 @@ func Test_CopyOnWrite(t *testing.T) {
 					return
 				default:
 					time.Sleep(time.Millisecond * 100)
-					fmt.Printf("%d: %d\n", goroutineNumber, rwmutexmap.Get(goroutineNumber).(int))
+					_ = rwmutexmap.Get(goroutineNumber).(int)
 				}
 			}
 		}(i)
 	}
 
 	time.Sleep(time.Second * 10)
-	fmt.Println("finalizing test")
 	quitSignal <- struct{}{}
 }
 
